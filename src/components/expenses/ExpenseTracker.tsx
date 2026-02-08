@@ -2,7 +2,18 @@
 
 import { useState, useMemo } from 'react';
 import styled from 'styled-components';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import {
+  UtensilsCrossed,
+  Car,
+  Film,
+  ShoppingBag,
+  FileText,
+  Heart,
+  Package,
+  Trash2,
+  Plus,
+} from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addExpense, removeExpense, setFilter } from '@/store/expensesSlice';
 import { ExpenseCategory } from '@/types';
@@ -40,6 +51,18 @@ const TotalAmount = styled.div`
   @media (max-width: 768px) {
     font-size: 28px;
   }
+`;
+
+const TopCategoryIcon = styled.div<{ $color: string }>`
+  width: 48px;
+  height: 48px;
+  border-radius: ${theme.radii.md};
+  background: ${({ $color }) => `${$color}15`};
+  color: ${({ $color }) => $color};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto;
 `;
 
 const ChartContainer = styled.div`
@@ -84,27 +107,16 @@ const ExpenseItem = styled.div`
   }
 `;
 
-const CategoryIcon = styled.span<{ $category: ExpenseCategory }>`
+const CategoryIconWrapper = styled.div<{ $color: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
   border-radius: ${theme.radii.md};
-  font-size: 18px;
   margin-right: 12px;
-  background: ${({ $category }) => {
-    const colors: Record<ExpenseCategory, string> = {
-      food: 'rgba(255, 149, 0, 0.1)',
-      transport: 'rgba(0, 122, 255, 0.1)',
-      entertainment: 'rgba(175, 82, 222, 0.1)',
-      shopping: 'rgba(255, 45, 85, 0.1)',
-      bills: 'rgba(88, 86, 214, 0.1)',
-      health: 'rgba(0, 210, 106, 0.1)',
-      other: 'rgba(142, 142, 147, 0.1)',
-    };
-    return colors[$category];
-  }};
+  background: ${({ $color }) => `${$color}15`};
+  color: ${({ $color }) => $color};
 `;
 
 const DeleteButton = styled.button`
@@ -115,6 +127,9 @@ const DeleteButton = styled.button`
   padding: 8px;
   border-radius: 50%;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: rgba(255, 59, 59, 0.1);
@@ -131,14 +146,22 @@ const FilterBar = styled(Flex)`
   }
 `;
 
-const categoryIcons: Record<ExpenseCategory, string> = {
-  food: '🍔',
-  transport: '🚗',
-  entertainment: '🎬',
-  shopping: '🛍️',
-  bills: '📄',
-  health: '💊',
-  other: '📦',
+const LegendDot = styled.span<{ $color: string }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${({ $color }) => $color};
+`;
+
+// Category icons mapping
+const CategoryIcons: Record<ExpenseCategory, React.FC<{ size?: number }>> = {
+  food: UtensilsCrossed,
+  transport: Car,
+  entertainment: Film,
+  shopping: ShoppingBag,
+  bills: FileText,
+  health: Heart,
+  other: Package,
 };
 
 const categoryColors: Record<ExpenseCategory, string> = {
@@ -149,6 +172,16 @@ const categoryColors: Record<ExpenseCategory, string> = {
   bills: '#5856D6',
   health: '#00D26A',
   other: '#8E8E93',
+};
+
+const categoryLabels: Record<ExpenseCategory, string> = {
+  food: 'Food',
+  transport: 'Transport',
+  entertainment: 'Entertainment',
+  shopping: 'Shopping',
+  bills: 'Bills',
+  health: 'Health',
+  other: 'Other',
 };
 
 export function ExpenseTracker() {
@@ -204,11 +237,15 @@ export function ExpenseTracker() {
   }, [filteredExpenses]);
 
   // Chart data
-  const pieData = Object.entries(summary.byCategory).map(([category, amount]) => ({
-    name: category,
-    value: amount,
-    color: categoryColors[category as ExpenseCategory],
-  }));
+  const pieData = Object.entries(summary.byCategory)
+    .map(([category, amount]) => ({
+      name: category,
+      value: amount,
+      color: categoryColors[category as ExpenseCategory],
+    }))
+    .sort((a, b) => b.value - a.value);
+
+  const topCategory = pieData[0]?.name as ExpenseCategory | undefined;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -239,6 +276,11 @@ export function ExpenseTracker() {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  const renderCategoryIcon = (category: ExpenseCategory, size = 18) => {
+    const IconComponent = CategoryIcons[category];
+    return <IconComponent size={size} />;
+  };
+
   return (
     <ExpenseCard $animate>
       {/* Summary Section */}
@@ -253,17 +295,17 @@ export function ExpenseTracker() {
 
         <SummaryCard>
           <Label>Top Category</Label>
-          {pieData.length > 0 ? (
+          {topCategory ? (
             <>
-              <TotalAmount style={{ fontSize: 24 }}>
-                {categoryIcons[pieData.sort((a, b) => b.value - a.value)[0]?.name as ExpenseCategory]}
-              </TotalAmount>
-              <Text $muted $size="13px" style={{ textTransform: 'capitalize' }}>
-                {pieData[0]?.name}
+              <TopCategoryIcon $color={categoryColors[topCategory]}>
+                {renderCategoryIcon(topCategory, 24)}
+              </TopCategoryIcon>
+              <Text $muted $size="13px">
+                {categoryLabels[topCategory]}
               </Text>
             </>
           ) : (
-            <Text $muted>No data</Text>
+            <Text $muted style={{ marginTop: 16 }}>No data</Text>
           )}
         </SummaryCard>
       </Grid>
@@ -287,7 +329,7 @@ export function ExpenseTracker() {
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value: number) => formatCurrency(value)}
+                formatter={(value) => formatCurrency(value as number)}
                 contentStyle={{
                   background: theme.colors.bgSecondary,
                   border: `1px solid ${theme.colors.border}`,
@@ -303,15 +345,8 @@ export function ExpenseTracker() {
       <Flex $gap="8px" $wrap="wrap" $justify="center" style={{ marginBottom: 24 }}>
         {pieData.map((item) => (
           <Badge key={item.name} $variant="neutral" style={{ gap: 6 }}>
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: item.color,
-              }}
-            />
-            <span style={{ textTransform: 'capitalize' }}>{item.name}</span>
+            <LegendDot $color={item.color} />
+            <span>{categoryLabels[item.name as ExpenseCategory]}</span>
           </Badge>
         ))}
       </Flex>
@@ -332,9 +367,9 @@ export function ExpenseTracker() {
           onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value as ExpenseCategory })}
           aria-label="Expense category"
         >
-          {Object.keys(categoryIcons).map((cat) => (
+          {Object.keys(categoryLabels).map((cat) => (
             <option key={cat} value={cat}>
-              {categoryIcons[cat as ExpenseCategory]} {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              {categoryLabels[cat as ExpenseCategory]}
             </option>
           ))}
         </Select>
@@ -346,6 +381,7 @@ export function ExpenseTracker() {
           aria-label="Expense description"
         />
         <Button type="submit" disabled={!newExpense.amount || !newExpense.description}>
+          <Plus size={16} />
           Add
         </Button>
       </ExpenseForm>
@@ -359,9 +395,9 @@ export function ExpenseTracker() {
           aria-label="Filter by category"
         >
           <option value="all">All Categories</option>
-          {Object.keys(categoryIcons).map((cat) => (
+          {Object.keys(categoryLabels).map((cat) => (
             <option key={cat} value={cat}>
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              {categoryLabels[cat as ExpenseCategory]}
             </option>
           ))}
         </Select>
@@ -388,13 +424,13 @@ export function ExpenseTracker() {
           filteredExpenses.map((expense) => (
             <ExpenseItem key={expense.id}>
               <Flex $align="center">
-                <CategoryIcon $category={expense.category}>
-                  {categoryIcons[expense.category]}
-                </CategoryIcon>
+                <CategoryIconWrapper $color={categoryColors[expense.category]}>
+                  {renderCategoryIcon(expense.category)}
+                </CategoryIconWrapper>
                 <div>
                   <Text style={{ fontWeight: 500 }}>{expense.description}</Text>
                   <Text $muted $size="12px">
-                    {formatDate(expense.date)} • {expense.category}
+                    {formatDate(expense.date)} · {categoryLabels[expense.category]}
                   </Text>
                 </div>
               </Flex>
@@ -406,9 +442,7 @@ export function ExpenseTracker() {
                   onClick={() => dispatch(removeExpense(expense.id))}
                   aria-label={`Delete expense: ${expense.description}`}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                  </svg>
+                  <Trash2 size={16} />
                 </DeleteButton>
               </Flex>
             </ExpenseItem>

@@ -1,6 +1,6 @@
-# FinanceFlow 💰
+# FinanceFlow
 
-A modern personal finance dashboard built with React, TypeScript, and Redux Toolkit. This project demonstrates proficiency in the modern frontend stack used by companies like Revolut.
+A modern personal finance dashboard built with React, TypeScript, and Redux Toolkit. This project demonstrates proficiency in the modern frontend stack used by leading fintech companies.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
@@ -8,33 +8,37 @@ A modern personal finance dashboard built with React, TypeScript, and Redux Tool
 ![Tests](https://img.shields.io/badge/Tests-24_passing-green)
 ![Coverage](https://img.shields.io/badge/Coverage-90%25+-brightgreen)
 
-## 🚀 Live Demo
+## Live Demo
 
 [View Live Demo](https://financeflow-demo.vercel.app) *(Deploy link)*
 
-## ✨ Features
+---
 
-### 💱 Currency Converter
+## Features
+
+### Currency Converter
 - Real-time exchange rates via [Frankfurter API](https://www.frankfurter.app/)
 - Support for 10+ major currencies (EUR, USD, GBP, JPY, etc.)
 - Conversion history tracking
 - Swap currencies with one click
 
-### 📈 Stock & Crypto Watchlist
+### Stock & Crypto Watchlist
 - Real-time price updates (simulated WebSocket)
 - Track stocks (AAPL, GOOGL, MSFT, AMZN, TSLA) and crypto (BTC, ETH)
 - Add/remove assets from watchlist
 - Live price change indicators with color coding
 - 24h high/low and volume data
 
-### 💰 Expense Tracker
+### Expense Tracker
 - Add, edit, and delete expenses
 - Category-based organization (Food, Transport, Entertainment, etc.)
 - Interactive pie chart visualization
 - Filter by category and date range (week/month/year)
 - Running total calculations
 
-## 🛠 Tech Stack
+---
+
+## Tech Stack
 
 | Technology | Purpose |
 |------------|---------|
@@ -42,51 +46,172 @@ A modern personal finance dashboard built with React, TypeScript, and Redux Tool
 | **TypeScript** | Type Safety |
 | **Redux Toolkit** | State Management |
 | **styled-components** | CSS-in-JS Styling |
+| **Lucide React** | Icon System |
 | **Recharts** | Data Visualization |
 | **Jest** | Unit Testing |
 | **React Testing Library** | Component Testing |
 | **Next.js 16** | Framework & SSR |
 
-## 📁 Project Structure
+---
+
+## Architecture
+
+```
+                         ╔═══════════════════════════════════════════════════════════════╗
+                         ║                      FINANCEFLOW APP                          ║
+                         ╚═══════════════════════════════════════════════════════════════╝
+                                                      │
+                    ┌─────────────────────────────────┼─────────────────────────────────┐
+                    │                                 │                                 │
+                    ▼                                 ▼                                 ▼
+    ┌───────────────────────────────┐  ┌───────────────────────────────┐  ┌───────────────────────────────┐
+    │                               │  │                               │  │                               │
+    │      CURRENCY CONVERTER       │  │      STOCK WATCHLIST          │  │      EXPENSE TRACKER          │
+    │                               │  │                               │  │                               │
+    │   ┌─────────────────────┐     │  │   ┌─────────────────────┐     │  │   ┌─────────────────────┐     │
+    │   │  Real-time Rates    │     │  │   │  Live Price Feed    │     │  │   │  CRUD Operations    │     │
+    │   │  Conversion History │     │  │   │  Portfolio Track    │     │  │   │  Category Filter    │     │
+    │   │  Multi-currency     │     │  │   │  Trend Indicators   │     │  │   │  Chart Viz          │     │
+    │   └─────────────────────┘     │  │   └─────────────────────┘     │  │   └─────────────────────┘     │
+    │                               │  │                               │  │                               │
+    └───────────────┬───────────────┘  └───────────────┬───────────────┘  └───────────────┬───────────────┘
+                    │                                  │                                  │
+                    │                                  │                                  │
+                    └──────────────────────────────────┼──────────────────────────────────┘
+                                                       │
+                                                       ▼
+                    ┌──────────────────────────────────────────────────────────────────────┐
+                    │                                                                      │
+                    │                           REDUX STORE                                │
+                    │                                                                      │
+                    │    ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
+                    │    │  currencySlice  │  │   stocksSlice   │  │  expensesSlice  │    │
+                    │    ├─────────────────┤  ├─────────────────┤  ├─────────────────┤    │
+                    │    │ rates           │  │ stocks          │  │ expenses        │    │
+                    │    │ baseCurrency    │  │ watchlist       │  │ filter          │    │
+                    │    │ conversions     │  │ connected       │  │ loading         │    │
+                    │    │ lastUpdated     │  │ lastUpdate      │  │                 │    │
+                    │    └─────────────────┘  └─────────────────┘  └─────────────────┘    │
+                    │                                                                      │
+                    └──────────────────────────────────┬───────────────────────────────────┘
+                                                       │
+                    ┌──────────────────────────────────┴───────────────────────────────────┐
+                    │                                                                      │
+                    ▼                                                                      ▼
+    ┌───────────────────────────────────────────┐              ┌───────────────────────────────────────────┐
+    │                                           │              │                                           │
+    │           FRANKFURTER API                 │              │         SIMULATED WEBSOCKET               │
+    │                                           │              │                                           │
+    │     Real exchange rates from ECB          │              │     setInterval-based price updates       │
+    │     Free, no API key required             │              │     Mimics real-time data feed            │
+    │     30+ currency pairs                    │              │     2-second refresh interval             │
+    │                                           │              │                                           │
+    └───────────────────────────────────────────┘              └───────────────────────────────────────────┘
+```
+
+---
+
+## Data Flow
+
+```
+    ┌─────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                         │
+    │   USER ACTION                                                                           │
+    │   (click, input, submit)                                                                │
+    │                                                                                         │
+    └─────────────────────────────────────────────┬───────────────────────────────────────────┘
+                                                  │
+                                                  ▼
+    ┌─────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                         │
+    │   DISPATCH ACTION                                                                       │
+    │   dispatch(addExpense({ amount, category, description }))                               │
+    │                                                                                         │
+    └─────────────────────────────────────────────┬───────────────────────────────────────────┘
+                                                  │
+                              ┌───────────────────┴───────────────────┐
+                              │                                       │
+                              ▼                                       ▼
+    ┌─────────────────────────────────────────┐     ┌─────────────────────────────────────────┐
+    │                                         │     │                                         │
+    │   SYNC ACTION                           │     │   ASYNC THUNK                           │
+    │                                         │     │                                         │
+    │   Immediate state update                │     │   API call → pending → fulfilled        │
+    │   addExpense, removeExpense             │     │   fetchRates, fetchStockData            │
+    │   setFilter, updateStockPrice           │     │                                         │
+    │                                         │     │                                         │
+    └──────────────────┬──────────────────────┘     └──────────────────┬──────────────────────┘
+                       │                                               │
+                       └───────────────────┬───────────────────────────┘
+                                           │
+                                           ▼
+    ┌─────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                         │
+    │   REDUCER                                                                               │
+    │   Pure function: (state, action) => newState                                            │
+    │                                                                                         │
+    └─────────────────────────────────────────────┬───────────────────────────────────────────┘
+                                                  │
+                                                  ▼
+    ┌─────────────────────────────────────────────────────────────────────────────────────────┐
+    │                                                                                         │
+    │   COMPONENT RE-RENDER                                                                   │
+    │   useAppSelector subscribes to state changes                                            │
+    │   UI updates automatically via React                                                    │
+    │                                                                                         │
+    └─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Project Structure
 
 ```
 financeflow/
 ├── src/
-│   ├── app/                    # Next.js app router
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── globals.css
+│   ├── app/                          # Next.js app router
+│   │   ├── layout.tsx                # Root layout with providers
+│   │   ├── page.tsx                  # Main page entry
+│   │   └── globals.css               # Global styles
+│   │
 │   ├── components/
-│   │   ├── currency/           # Currency converter
+│   │   ├── currency/                 # Currency converter module
 │   │   │   └── CurrencyConverter.tsx
-│   │   ├── stocks/             # Stock watchlist
+│   │   ├── stocks/                   # Stock watchlist module
 │   │   │   └── StockWatchlist.tsx
-│   │   ├── expenses/           # Expense tracker
+│   │   ├── expenses/                 # Expense tracker module
 │   │   │   └── ExpenseTracker.tsx
-│   │   ├── ui/                 # Shared UI components
-│   │   │   └── styled.ts
-│   │   ├── Dashboard.tsx       # Main dashboard
-│   │   └── Providers.tsx       # Redux provider
+│   │   ├── ui/                       # Shared UI components
+│   │   │   └── styled.ts             # Styled-components theme
+│   │   ├── Dashboard.tsx             # Tab-based dashboard
+│   │   └── Providers.tsx             # Redux provider wrapper
+│   │
 │   ├── store/
-│   │   ├── index.ts            # Store configuration
-│   │   ├── hooks.ts            # Typed Redux hooks
-│   │   ├── currencySlice.ts    # Currency state
-│   │   ├── stocksSlice.ts      # Stocks state
-│   │   └── expensesSlice.ts    # Expenses state
+│   │   ├── index.ts                  # Store configuration
+│   │   ├── hooks.ts                  # Typed Redux hooks
+│   │   ├── currencySlice.ts          # Currency state + async thunks
+│   │   ├── stocksSlice.ts            # Stocks state management
+│   │   └── expensesSlice.ts          # Expenses CRUD operations
+│   │
 │   ├── hooks/
-│   │   └── useStockSimulation.ts  # Real-time simulation
+│   │   └── useStockSimulation.ts     # Real-time price simulation
+│   │
 │   ├── types/
-│   │   └── index.ts            # TypeScript types
+│   │   └── index.ts                  # Shared TypeScript types
+│   │
 │   └── __tests__/
-│       ├── currencySlice.test.ts
-│       ├── stocksSlice.test.ts
-│       └── expensesSlice.test.ts
-├── jest.config.js
-├── jest.setup.js
+│       ├── currencySlice.test.ts     # 6 tests
+│       ├── stocksSlice.test.ts       # 8 tests
+│       └── expensesSlice.test.ts     # 10 tests
+│
+├── jest.config.js                    # Jest configuration
+├── jest.setup.js                     # Test environment setup
 └── package.json
 ```
 
-## 🧪 Testing
+---
+
+## Testing
 
 The project follows TDD principles with comprehensive test coverage:
 
@@ -110,7 +235,9 @@ npm run test:coverage
 | Expenses | 10 | 100% |
 | **Total** | **24** | **~95%** |
 
-## 🚀 Getting Started
+---
+
+## Getting Started
 
 ### Prerequisites
 
@@ -121,7 +248,7 @@ npm run test:coverage
 
 ```bash
 # Clone the repository
-git clone https://github.com/tomferrari/financeflow.git
+git clone https://github.com/TomFerr23/financeflow.git
 
 # Navigate to project directory
 cd financeflow
@@ -142,7 +269,9 @@ npm run build
 npm start
 ```
 
-## 🎯 Key Implementation Details
+---
+
+## Key Implementation Details
 
 ### State Management with Redux Toolkit
 
@@ -181,25 +310,33 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
 
-## 🎨 Design Decisions
+---
+
+## Design Decisions
 
 1. **Dark Theme**: Inspired by modern fintech apps (Revolut, Robinhood)
 2. **Mobile-First**: Responsive design that works on all devices
 3. **Accessibility**: ARIA labels, keyboard navigation, focus indicators
 4. **Performance**: Memoization, virtualization considerations for large lists
+5. **Icon System**: Lucide React for consistent, scalable vector icons
 
-## 📝 What Went Well
+---
 
-- ✅ Clean separation of concerns with Redux slices
-- ✅ Type-safe throughout with TypeScript
-- ✅ Comprehensive test coverage from day one (TDD approach)
-- ✅ Real API integration (Frankfurter) for currency rates
-- ✅ Realistic stock simulation that mimics WebSocket behavior
-- ✅ Polished UI with smooth animations
-- ✅ styled-components for consistent, themeable styling
-- ✅ Proper project structure following industry standards
+## What Went Well
 
-## 🔄 Challenges & Solutions
+- Clean separation of concerns with Redux slices
+- Type-safe throughout with TypeScript
+- Comprehensive test coverage from day one (TDD approach)
+- Real API integration (Frankfurter) for currency rates
+- Realistic stock simulation that mimics WebSocket behavior
+- Polished UI with smooth animations
+- styled-components for consistent, themeable styling
+- Professional icon system with Lucide React
+- Proper project structure following industry standards
+
+---
+
+## Challenges & Solutions
 
 | Challenge | Solution |
 |-----------|----------|
@@ -210,9 +347,10 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 | Type safety with Redux | Created custom typed hooks (`useAppDispatch`, `useAppSelector`) |
 | Testing async Redux actions | Used `createAsyncThunk` which integrates well with Jest |
 
-## 🚧 Future Improvements
+---
 
-- [ ] Add Mermaid.js for dynamic architecture/flow diagrams
+## Future Improvements
+
 - [ ] Implement actual WebSocket connection for live stock data
 - [ ] Add user authentication (OAuth)
 - [ ] Persist data to localStorage or backend database
@@ -222,51 +360,23 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 - [ ] Add E2E tests with Cypress
 - [ ] Implement dark/light theme toggle
 
-## 📊 Architecture Diagram
+---
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        React App                             │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │   Currency   │  │    Stocks    │  │   Expenses   │       │
-│  │  Converter   │  │  Watchlist   │  │   Tracker    │       │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │
-│         │                 │                 │               │
-│         └────────────────┼─────────────────┘               │
-│                          │                                  │
-│                   ┌──────▼───────┐                          │
-│                   │ Redux Store  │                          │
-│                   ├──────────────┤                          │
-│                   │ • currency   │                          │
-│                   │ • stocks     │                          │
-│                   │ • expenses   │                          │
-│                   └──────┬───────┘                          │
-│                          │                                  │
-├──────────────────────────┼──────────────────────────────────┤
-│                   ┌──────▼───────┐                          │
-│                   │  External    │                          │
-│                   │    APIs      │                          │
-│                   ├──────────────┤                          │
-│                   │ Frankfurter  │ (Currency rates)         │
-│                   │ Simulated WS │ (Stock prices)           │
-│                   └──────────────┘                          │
-└─────────────────────────────────────────────────────────────┘
-```
-
-## 👨‍💻 Author
+## Author
 
 **Tom Ferrari** - Frontend Engineer
 
-- 🔗 LinkedIn: [tommaso-ferrari-it](https://linkedin.com/in/tommaso-ferrari-it)
-- 💻 GitHub: [tomferrari](https://github.com/tomferrari)
-- 📧 Email: tomferrari.dev@gmail.com
-- 🌐 Portfolio: [tomferrari.dev](https://tomferrari.dev)
+- LinkedIn: [tommaso-ferrari-it](https://linkedin.com/in/tommaso-ferrari-it)
+- GitHub: [TomFerr23](https://github.com/TomFerr23)
+- Email: tomferrari.dev@gmail.com
+- Portfolio: [tomferrari.dev](https://tomferrari.dev)
 
-## 📄 License
+---
+
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-Built with ❤️ as a portfolio project demonstrating modern React/TypeScript development practices.
+Built as a portfolio project demonstrating modern React/TypeScript development practices.

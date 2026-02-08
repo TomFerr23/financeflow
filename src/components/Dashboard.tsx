@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styled from 'styled-components';
+import { ArrowLeftRight, TrendingUp, Wallet, Layers } from 'lucide-react';
 import { CurrencyConverter } from './currency/CurrencyConverter';
 import { StockWatchlist } from './stocks/StockWatchlist';
 import { ExpenseTracker } from './expenses/ExpenseTracker';
@@ -39,8 +40,7 @@ const LogoIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 18px;
+  color: white;
 `;
 
 const MainContent = styled.main`
@@ -53,10 +53,16 @@ const Footer = styled.footer`
   margin-top: 40px;
 `;
 
+const TabIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px;
+`;
+
 const tabs = [
-  { id: 'currency', label: 'Currency', icon: '💱' },
-  { id: 'stocks', label: 'Watchlist', icon: '📈' },
-  { id: 'expenses', label: 'Expenses', icon: '💰' },
+  { id: 'currency', label: 'Currency', Icon: ArrowLeftRight },
+  { id: 'stocks', label: 'Watchlist', Icon: TrendingUp },
+  { id: 'expenses', label: 'Expenses', Icon: Wallet },
 ];
 
 export function Dashboard() {
@@ -68,7 +74,9 @@ export function Dashboard() {
         <Header>
           <Flex $justify="space-between" $align="center" $wrap="wrap" $gap="16px">
             <Logo>
-              <LogoIcon>FF</LogoIcon>
+              <LogoIcon>
+                <Layers size={22} strokeWidth={2.5} />
+              </LogoIcon>
               <div>
                 <Title style={{ fontSize: 20 }}>FinanceFlow</Title>
                 <Text $muted $size="12px">Personal Finance Dashboard</Text>
@@ -91,7 +99,9 @@ export function Dashboard() {
               aria-controls={`${tab.id}-panel`}
               id={`${tab.id}-tab`}
             >
-              <span style={{ marginRight: 8 }}>{tab.icon}</span>
+              <TabIcon>
+                <tab.Icon size={16} />
+              </TabIcon>
               {tab.label}
             </Tab>
           ))}
@@ -129,11 +139,11 @@ export function Dashboard() {
         <Footer>
           <Flex $justify="space-between" $align="center" $wrap="wrap" $gap="12px">
             <Text $muted $size="13px">
-              © 2024 Tom Ferrari • Demo Project
+              2024 Tom Ferrari
             </Text>
             <Flex $gap="16px">
               <Text $muted $size="13px">
-                React 18 • Redux Toolkit • TypeScript • styled-components
+                React • Redux Toolkit • TypeScript • styled-components
               </Text>
             </Flex>
           </Flex>

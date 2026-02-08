@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { ArrowUpDown, Clock } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchRates, addConversion } from '@/store/currencySlice';
 import {
@@ -202,9 +203,7 @@ export function CurrencyConverter() {
         aria-label="Swap currencies"
         title="Swap currencies"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16" />
-        </svg>
+        <ArrowUpDown size={20} />
       </SwapButton>
 
       <Flex $direction="column" $gap="8px">
@@ -254,7 +253,10 @@ export function CurrencyConverter() {
 
       {conversions.length > 0 && (
         <HistoryList>
-          <Label>Recent Conversions</Label>
+          <Label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Clock size={14} />
+            Recent Conversions
+          </Label>
           {conversions.slice(0, 5).map((conv, i) => (
             <HistoryItem key={i}>
               <Text>

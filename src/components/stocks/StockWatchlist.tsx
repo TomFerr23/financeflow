@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import styled from 'styled-components';
+import { TrendingUp, TrendingDown, X, Plus, Radio } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToWatchlist, removeFromWatchlist } from '@/store/stocksSlice';
 import { useStockSimulation } from '@/hooks/useStockSimulation';
@@ -214,8 +215,9 @@ export function StockWatchlist() {
               <StockInfo>
                 <Flex $align="center" $gap="8px">
                   <StockSymbol>{stock.symbol}</StockSymbol>
-                  <Badge $variant={isPositive ? 'success' : 'error'}>
-                    {isPositive ? '▲' : '▼'} {Math.abs(stock.changePercent).toFixed(2)}%
+                  <Badge $variant={isPositive ? 'success' : 'error'} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    {isPositive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                    {Math.abs(stock.changePercent).toFixed(2)}%
                   </Badge>
                 </Flex>
                 <StockName>{stock.name}</StockName>
@@ -238,9 +240,7 @@ export function StockWatchlist() {
                 aria-label={`Remove ${stock.symbol} from watchlist`}
                 title="Remove from watchlist"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
+                <X size={16} />
               </RemoveButton>
             </StockItem>
           );
@@ -263,7 +263,8 @@ export function StockWatchlist() {
                 </option>
               ))}
             </StockSelect>
-            <Button onClick={handleAddStock} disabled={!selectedStock}>
+            <Button onClick={handleAddStock} disabled={!selectedStock} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Plus size={16} />
               Add
             </Button>
           </Flex>
