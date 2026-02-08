@@ -345,3 +345,197 @@ export const Tab = styled.button<{ $active?: boolean }>`
     color: ${theme.colors.text};
   }
 `;
+
+// Sidebar Components
+export const SidebarContainer = styled.aside<{ $isOpen?: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: ${theme.colors.bgSecondary};
+  border-right: 1px solid ${theme.colors.border};
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+
+  @media (max-width: 768px) {
+    transform: ${({ $isOpen }) => ($isOpen ? 'translateX(0)' : 'translateX(-100%)')};
+    transition: transform 0.3s ease-out;
+  }
+`;
+
+export const SidebarHeader = styled.div`
+  padding: 24px 20px;
+  border-bottom: 1px solid ${theme.colors.border};
+`;
+
+export const SidebarNav = styled.nav`
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+`;
+
+export const SidebarItem = styled.button<{ $active?: boolean }>`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ $active }) => ($active ? theme.colors.text : theme.colors.textSecondary)};
+  background: ${({ $active }) => ($active ? theme.colors.bgTertiary : 'transparent')};
+  border: none;
+  border-radius: ${theme.radii.md};
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+
+  &:hover {
+    background: ${theme.colors.bgTertiary};
+    color: ${theme.colors.text};
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+`;
+
+export const SidebarFooter = styled.div`
+  padding: 16px;
+  border-top: 1px solid ${theme.colors.border};
+`;
+
+export const Avatar = styled.div<{ $size?: 'sm' | 'md' | 'lg' }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${theme.radii.md};
+  background: ${theme.colors.accent};
+  color: white;
+  font-weight: 600;
+  flex-shrink: 0;
+
+  ${({ $size }) => {
+    switch ($size) {
+      case 'sm':
+        return css`
+          width: 32px;
+          height: 32px;
+          font-size: 12px;
+        `;
+      case 'lg':
+        return css`
+          width: 56px;
+          height: 56px;
+          font-size: 20px;
+        `;
+      default:
+        return css`
+          width: 40px;
+          height: 40px;
+          font-size: 14px;
+        `;
+    }
+  }}
+`;
+
+export const MobileHeader = styled.header`
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: ${theme.colors.bgSecondary};
+  border-bottom: 1px solid ${theme.colors.border};
+  padding: 0 16px;
+  z-index: 99;
+
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+`;
+
+export const HamburgerButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  color: ${theme.colors.text};
+  cursor: pointer;
+  border-radius: ${theme.radii.sm};
+
+  &:hover {
+    background: ${theme.colors.bgTertiary};
+  }
+`;
+
+export const Overlay = styled.div<{ $isOpen?: boolean }>`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+`;
+
+export const MainContent = styled.main`
+  margin-left: 260px;
+  min-height: 100vh;
+  padding: 24px;
+  background: ${theme.colors.bg};
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    padding-top: 76px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+`;
+
+// Summary Card for Dashboard Overview
+export const SummaryCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const SummaryValue = styled.div`
+  font-size: 28px;
+  font-weight: 700;
+  color: ${theme.colors.text};
+  font-variant-numeric: tabular-nums;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+  }
+`;
+
+export const SummaryLabel = styled.span`
+  font-size: 13px;
+  color: ${theme.colors.textSecondary};
+`;
+
+export const SummaryIcon = styled.div<{ $color?: string }>`
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${theme.radii.md};
+  background: ${({ $color }) => $color ? `${$color}15` : theme.colors.bgTertiary};
+  color: ${({ $color }) => $color || theme.colors.accent};
+`;

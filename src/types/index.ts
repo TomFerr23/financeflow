@@ -1,3 +1,5 @@
+import type { FC, ReactNode } from 'react';
+
 // Currency Types
 export interface CurrencyRate {
   code: string;
@@ -59,9 +61,36 @@ export interface ExpenseSummary {
   byMonth: Record<string, number>;
 }
 
+// User/Account Types
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  memberSince: string;
+}
+
+export interface UserBalance {
+  total: number;
+  currency: string;
+}
+
+export interface UserSettings {
+  defaultCurrency: string;
+  notifications: boolean;
+}
+
 // UI Types
 export interface TabItem {
   id: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
+}
+
+export type PageId = 'overview' | 'currency' | 'stocks' | 'expenses' | 'settings';
+
+export interface NavItem {
+  id: PageId;
+  label: string;
+  Icon: FC<{ size?: number }>;
 }
