@@ -1,8 +1,9 @@
 'use client';
 
-import { User, Mail, Calendar, Globe, Bell, Shield } from 'lucide-react';
+import { User, Mail, Calendar, Globe, Bell, Shield, Sun, Moon, Palette } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { updateSettings } from '@/store/userSlice';
+import { useTheme } from '@/context/ThemeContext';
 import {
   Card,
   Flex,
@@ -31,6 +32,7 @@ const SectionTitle = styled.h3`
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: color 0.3s;
 `;
 
 const SettingRow = styled.div`
@@ -39,6 +41,7 @@ const SettingRow = styled.div`
   align-items: center;
   padding: 12px 0;
   border-bottom: 1px solid ${theme.colors.border};
+  transition: border-color 0.3s;
 
   &:last-child {
     border-bottom: none;
@@ -107,7 +110,8 @@ const ProfileCard = styled.div`
   gap: 16px;
   padding: 16px;
   background: ${theme.colors.bgTertiary};
-  border-radius: ${theme.radii.md};
+  border-radius: 12px;
+  transition: background 0.3s;
 `;
 
 const InfoItem = styled.div`
@@ -116,6 +120,7 @@ const InfoItem = styled.div`
   gap: 12px;
   padding: 12px 0;
   border-bottom: 1px solid ${theme.colors.border};
+  transition: border-color 0.3s;
 
   &:last-child {
     border-bottom: none;
@@ -124,6 +129,41 @@ const InfoItem = styled.div`
   svg {
     color: ${theme.colors.textSecondary};
     flex-shrink: 0;
+    transition: color 0.3s;
+  }
+`;
+
+const ThemeSwitcher = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const ThemeButton = styled.button<{ $active?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: ${({ $active }) => ($active ? 'white' : theme.colors.textSecondary)};
+  background: ${({ $active }) => ($active ? theme.colors.accent : theme.colors.bgTertiary)};
+  border: 1px solid ${({ $active }) => ($active ? theme.colors.accent : theme.colors.border)};
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${({ $active }) => ($active ? theme.colors.accentHover : theme.colors.border)};
+    color: ${({ $active }) => ($active ? 'white' : theme.colors.text)};
+  }
+
+  svg {
+    transition: transform 0.3s;
+  }
+
+  &:hover svg {
+    transform: ${({ $active }) => ($active ? 'rotate(15deg)' : 'scale(1.1)')};
   }
 `;
 
@@ -138,6 +178,7 @@ const currencies = [
 export function Settings() {
   const dispatch = useAppDispatch();
   const { user, settings } = useAppSelector((state) => state.user);
+  const { mode, setTheme } = useTheme();
 
   const getInitials = (name: string) => {
     return name
@@ -211,6 +252,36 @@ export function Settings() {
             </div>
           </InfoItem>
         </div>
+      </SettingsSection>
+
+      <SettingsSection $animate>
+        <SectionTitle>
+          <Palette size={20} />
+          Appearance
+        </SectionTitle>
+
+        <SettingRow>
+          <SettingLabel>
+            <Text style={{ fontWeight: 500 }}>Theme</Text>
+            <Text $muted $size="12px">Choose your preferred color scheme</Text>
+          </SettingLabel>
+          <ThemeSwitcher>
+            <ThemeButton
+              $active={mode === 'light'}
+              onClick={() => setTheme('light')}
+            >
+              <Sun size={16} />
+              Light
+            </ThemeButton>
+            <ThemeButton
+              $active={mode === 'dark'}
+              onClick={() => setTheme('dark')}
+            >
+              <Moon size={16} />
+              Dark
+            </ThemeButton>
+          </ThemeSwitcher>
+        </SettingRow>
       </SettingsSection>
 
       <SettingsSection $animate>

@@ -3,19 +3,21 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { PageId } from '@/types';
+import { useTheme } from '@/context/ThemeContext';
 import { AppLayout } from './layout/AppLayout';
 import { DashboardOverview } from './dashboard/DashboardOverview';
 import { CurrencyConverter } from './currency/CurrencyConverter';
 import { StockWatchlist } from './stocks/StockWatchlist';
 import { ExpenseTracker } from './expenses/ExpenseTracker';
 import { Settings } from './settings/Settings';
-import { theme } from './ui/styled';
+import { theme, ThemeVariables } from './ui/styled';
 
-const AppWrapper = styled.div`
+const AppWrapper = styled(ThemeVariables)`
   min-height: 100vh;
   background: ${theme.colors.bg};
   color: ${theme.colors.text};
   font-family: ${theme.fonts.body};
+  transition: background 0.3s, color 0.3s;
 `;
 
 const PageContainer = styled.div`
@@ -36,6 +38,7 @@ const PageContainer = styled.div`
 
 export function Dashboard() {
   const [activePage, setActivePage] = useState<PageId>('overview');
+  const { mode } = useTheme();
 
   const handleNavigate = (page: PageId) => {
     setActivePage(page);
@@ -59,7 +62,7 @@ export function Dashboard() {
   };
 
   return (
-    <AppWrapper>
+    <AppWrapper data-theme={mode}>
       <AppLayout activePage={activePage} onNavigate={handleNavigate}>
         <PageContainer key={activePage}>
           {renderPage()}

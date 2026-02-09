@@ -2,21 +2,30 @@
 
 import styled, { css, keyframes } from 'styled-components';
 
-// Theme colors (Revolut-inspired dark theme)
+// Theme colors using CSS variables for dynamic theming
 export const theme = {
   colors: {
-    bg: '#0D0D0D',
-    bgSecondary: '#1A1A1A',
-    bgTertiary: '#252525',
-    text: '#FFFFFF',
-    textSecondary: '#8A8A8A',
-    textMuted: '#5A5A5A',
-    accent: '#0066FF',
-    accentHover: '#0052CC',
-    success: '#00D26A',
-    error: '#FF3B3B',
-    warning: '#FFB800',
-    border: '#2A2A2A',
+    bg: 'var(--color-bg)',
+    bgSecondary: 'var(--color-bg-secondary)',
+    bgTertiary: 'var(--color-bg-tertiary)',
+    text: 'var(--color-text)',
+    textSecondary: 'var(--color-text-secondary)',
+    textMuted: 'var(--color-text-muted)',
+    accent: 'var(--color-accent)',
+    accentHover: 'var(--color-accent-hover)',
+    accentLight: 'var(--color-accent-light)',
+    success: 'var(--color-success)',
+    successLight: 'var(--color-success-light)',
+    error: 'var(--color-error)',
+    errorLight: 'var(--color-error-light)',
+    warning: 'var(--color-warning)',
+    warningLight: 'var(--color-warning-light)',
+    border: 'var(--color-border)',
+    cardShadow: 'var(--color-card-shadow)',
+    gradientPrimary: 'var(--gradient-primary)',
+    gradientSecondary: 'var(--gradient-secondary)',
+    gradientSuccess: 'var(--gradient-success)',
+    gradientAccent: 'var(--gradient-accent)',
   },
   fonts: {
     body: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -26,9 +35,63 @@ export const theme = {
     sm: '8px',
     md: '12px',
     lg: '16px',
+    xl: '24px',
     full: '9999px',
   },
 };
+
+// CSS Variables for theming
+export const ThemeVariables = styled.div`
+  /* Dark theme (default) */
+  --color-bg: #0D0D0D;
+  --color-bg-secondary: #1A1A1A;
+  --color-bg-tertiary: #252525;
+  --color-text: #FFFFFF;
+  --color-text-secondary: #8A8A8A;
+  --color-text-muted: #5A5A5A;
+  --color-accent: #0066FF;
+  --color-accent-hover: #0052CC;
+  --color-accent-light: rgba(0, 102, 255, 0.1);
+  --color-success: #00D26A;
+  --color-success-light: rgba(0, 210, 106, 0.1);
+  --color-error: #FF3B3B;
+  --color-error-light: rgba(255, 59, 59, 0.1);
+  --color-warning: #FFB800;
+  --color-warning-light: rgba(255, 184, 0, 0.1);
+  --color-border: #2A2A2A;
+  --color-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --gradient-primary: linear-gradient(135deg, #0066FF 0%, #00D26A 100%);
+  --gradient-secondary: linear-gradient(135deg, #FF3B3B 0%, #FFB800 100%);
+  --gradient-success: linear-gradient(135deg, #00D26A 0%, #00FFB2 100%);
+  --gradient-accent: linear-gradient(135deg, #0066FF 0%, #8B5CF6 100%);
+
+  /* Light theme */
+  &[data-theme="light"] {
+    --color-bg: #F5F7FA;
+    --color-bg-secondary: #FFFFFF;
+    --color-bg-tertiary: #EDF2F7;
+    --color-text: #1A202C;
+    --color-text-secondary: #4A5568;
+    --color-text-muted: #A0AEC0;
+    --color-accent: #0066FF;
+    --color-accent-hover: #0052CC;
+    --color-accent-light: rgba(0, 102, 255, 0.08);
+    --color-success: #00B85E;
+    --color-success-light: rgba(0, 184, 94, 0.1);
+    --color-error: #E53E3E;
+    --color-error-light: rgba(229, 62, 62, 0.1);
+    --color-warning: #DD6B20;
+    --color-warning-light: rgba(221, 107, 32, 0.1);
+    --color-border: #E2E8F0;
+    --color-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    --gradient-primary: linear-gradient(135deg, #0066FF 0%, #00B85E 100%);
+    --gradient-secondary: linear-gradient(135deg, #E53E3E 0%, #DD6B20 100%);
+    --gradient-success: linear-gradient(135deg, #00B85E 0%, #38D9A9 100%);
+    --gradient-accent: linear-gradient(135deg, #0066FF 0%, #805AD5 100%);
+  }
+
+  transition: all 0.3s ease;
+`;
 
 // Animations
 const fadeIn = keyframes`
@@ -44,6 +107,34 @@ const pulse = keyframes`
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+`;
+
+const chartGrow = keyframes`
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+`;
+
+const chartSlideIn = keyframes`
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+`;
+
+const gradientShift = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 `;
 
 // Base Components
@@ -62,7 +153,9 @@ export const Card = styled.div<{ $animate?: boolean }>`
   border: 1px solid ${theme.colors.border};
   border-radius: ${theme.radii.lg};
   padding: 24px;
+  box-shadow: ${theme.colors.cardShadow};
   animation: ${({ $animate }) => ($animate ? css`${fadeIn} 0.3s ease-out` : 'none')};
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -100,6 +193,7 @@ export const Title = styled.h1`
   font-weight: 700;
   color: ${theme.colors.text};
   margin: 0;
+  transition: color 0.3s;
 
   @media (max-width: 768px) {
     font-size: 24px;
@@ -111,6 +205,7 @@ export const Subtitle = styled.h2`
   font-weight: 600;
   color: ${theme.colors.text};
   margin: 0;
+  transition: color 0.3s;
 `;
 
 export const Text = styled.p<{ $muted?: boolean; $size?: string }>`
@@ -118,6 +213,7 @@ export const Text = styled.p<{ $muted?: boolean; $size?: string }>`
   color: ${({ $muted }) => ($muted ? theme.colors.textSecondary : theme.colors.text)};
   margin: 0;
   line-height: 1.5;
+  transition: color 0.3s;
 `;
 
 export const Label = styled.span`
@@ -126,6 +222,7 @@ export const Label = styled.span`
   color: ${theme.colors.textSecondary};
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: color 0.3s;
 `;
 
 // Inputs
@@ -138,11 +235,11 @@ export const Input = styled.input`
   border: 1px solid ${theme.colors.border};
   border-radius: ${theme.radii.md};
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
 
   &:focus {
     border-color: ${theme.colors.accent};
-    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    box-shadow: 0 0 0 3px ${theme.colors.accentLight};
   }
 
   &::placeholder {
@@ -164,6 +261,7 @@ export const Select = styled.select`
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
 
   &:focus {
     border-color: ${theme.colors.accent};
@@ -246,22 +344,23 @@ export const Badge = styled.span<{ $variant?: 'success' | 'error' | 'warning' | 
   font-size: 12px;
   font-weight: 600;
   border-radius: ${theme.radii.sm};
+  transition: background 0.3s, color 0.3s;
 
   ${({ $variant }) => {
     switch ($variant) {
       case 'success':
         return css`
-          background: rgba(0, 210, 106, 0.1);
+          background: ${theme.colors.successLight};
           color: ${theme.colors.success};
         `;
       case 'error':
         return css`
-          background: rgba(255, 59, 59, 0.1);
+          background: ${theme.colors.errorLight};
           color: ${theme.colors.error};
         `;
       case 'warning':
         return css`
-          background: rgba(255, 184, 0, 0.1);
+          background: ${theme.colors.warningLight};
           color: ${theme.colors.warning};
         `;
       default:
@@ -292,6 +391,7 @@ export const Skeleton = styled.div<{ $width?: string; $height?: string }>`
 export const PriceChange = styled.span<{ $positive: boolean }>`
   color: ${({ $positive }) => ($positive ? theme.colors.success : theme.colors.error)};
   font-weight: 600;
+  transition: color 0.3s;
 `;
 
 // Live indicator
@@ -321,6 +421,7 @@ export const TabList = styled.div`
   border-radius: ${theme.radii.md};
   margin-bottom: 24px;
   overflow-x: auto;
+  transition: background 0.3s;
 
   @media (max-width: 768px) {
     margin-bottom: 16px;
@@ -346,6 +447,30 @@ export const Tab = styled.button<{ $active?: boolean }>`
   }
 `;
 
+// Filter Tabs (pill style)
+export const FilterTabList = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+`;
+
+export const FilterTab = styled.button<{ $active?: boolean }>`
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: ${({ $active }) => ($active ? 'white' : theme.colors.textSecondary)};
+  background: ${({ $active }) => ($active ? theme.colors.accent : theme.colors.bgTertiary)};
+  border: none;
+  border-radius: ${theme.radii.full};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${({ $active }) => ($active ? theme.colors.accentHover : theme.colors.border)};
+    color: ${({ $active }) => ($active ? 'white' : theme.colors.text)};
+  }
+`;
+
 // Sidebar Components
 export const SidebarContainer = styled.aside<{ $isOpen?: boolean }>`
   position: fixed;
@@ -358,16 +483,18 @@ export const SidebarContainer = styled.aside<{ $isOpen?: boolean }>`
   display: flex;
   flex-direction: column;
   z-index: 100;
+  transition: background 0.3s, border-color 0.3s;
 
   @media (max-width: 768px) {
     transform: ${({ $isOpen }) => ($isOpen ? 'translateX(0)' : 'translateX(-100%)')};
-    transition: transform 0.3s ease-out;
+    transition: transform 0.3s ease-out, background 0.3s, border-color 0.3s;
   }
 `;
 
 export const SidebarHeader = styled.div`
   padding: 24px 20px;
   border-bottom: 1px solid ${theme.colors.border};
+  transition: border-color 0.3s;
 `;
 
 export const SidebarNav = styled.nav`
@@ -405,6 +532,7 @@ export const SidebarItem = styled.button<{ $active?: boolean }>`
 export const SidebarFooter = styled.div`
   padding: 16px;
   border-top: 1px solid ${theme.colors.border};
+  transition: border-color 0.3s;
 `;
 
 export const Avatar = styled.div<{ $size?: 'sm' | 'md' | 'lg' }>`
@@ -412,7 +540,7 @@ export const Avatar = styled.div<{ $size?: 'sm' | 'md' | 'lg' }>`
   align-items: center;
   justify-content: center;
   border-radius: ${theme.radii.md};
-  background: ${theme.colors.accent};
+  background: ${theme.colors.gradientAccent};
   color: white;
   font-weight: 600;
   flex-shrink: 0;
@@ -452,6 +580,7 @@ export const MobileHeader = styled.header`
   border-bottom: 1px solid ${theme.colors.border};
   padding: 0 16px;
   z-index: 99;
+  transition: background 0.3s, border-color 0.3s;
 
   @media (max-width: 768px) {
     display: flex;
@@ -471,6 +600,7 @@ export const HamburgerButton = styled.button`
   color: ${theme.colors.text};
   cursor: pointer;
   border-radius: ${theme.radii.sm};
+  transition: background 0.2s, color 0.3s;
 
   &:hover {
     background: ${theme.colors.bgTertiary};
@@ -497,6 +627,7 @@ export const MainContent = styled.main`
   min-height: 100vh;
   padding: 24px;
   background: ${theme.colors.bg};
+  transition: background 0.3s;
 
   @media (max-width: 768px) {
     margin-left: 0;
@@ -518,6 +649,7 @@ export const SummaryValue = styled.div`
   font-weight: 700;
   color: ${theme.colors.text};
   font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
 
   @media (max-width: 768px) {
     font-size: 24px;
@@ -527,6 +659,7 @@ export const SummaryValue = styled.div`
 export const SummaryLabel = styled.span`
   font-size: 13px;
   color: ${theme.colors.textSecondary};
+  transition: color 0.3s;
 `;
 
 export const SummaryIcon = styled.div<{ $color?: string }>`
@@ -538,4 +671,140 @@ export const SummaryIcon = styled.div<{ $color?: string }>`
   border-radius: ${theme.radii.md};
   background: ${({ $color }) => $color ? `${$color}15` : theme.colors.bgTertiary};
   color: ${({ $color }) => $color || theme.colors.accent};
+  transition: background 0.3s;
+`;
+
+// Chart Components
+export const ChartCard = styled(Card)`
+  position: relative;
+  overflow: hidden;
+`;
+
+export const ChartHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+`;
+
+export const ChartContainer = styled.div<{ $animate?: boolean }>`
+  width: 100%;
+  height: 300px;
+  animation: ${({ $animate }) => ($animate ? css`${chartSlideIn} 0.6s ease-out` : 'none')};
+
+  @media (max-width: 768px) {
+    height: 250px;
+  }
+
+  .recharts-cartesian-grid-horizontal line,
+  .recharts-cartesian-grid-vertical line {
+    stroke: ${theme.colors.border};
+  }
+
+  .recharts-text {
+    fill: ${theme.colors.textSecondary};
+  }
+
+  .recharts-tooltip-wrapper {
+    outline: none;
+  }
+`;
+
+export const ChartTooltip = styled.div`
+  background: ${theme.colors.bgSecondary};
+  border: 1px solid ${theme.colors.border};
+  border-radius: ${theme.radii.md};
+  padding: 12px 16px;
+  box-shadow: ${theme.colors.cardShadow};
+`;
+
+export const ChartLegend = styled.div`
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+`;
+
+export const LegendItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: ${theme.colors.textSecondary};
+`;
+
+export const LegendDot = styled.span<{ $color: string }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${({ $color }) => $color};
+`;
+
+// Gradient bar for charts
+export const GradientBar = styled.div<{ $width: number; $delay?: number }>`
+  height: 8px;
+  border-radius: ${theme.radii.full};
+  background: ${theme.colors.gradientPrimary};
+  width: ${({ $width }) => $width}%;
+  transform-origin: left;
+  animation: ${chartGrow} 0.8s ease-out forwards;
+  animation-delay: ${({ $delay }) => $delay || 0}s;
+`;
+
+// Progress Ring
+export const ProgressRing = styled.div<{ $progress: number; $color?: string }>`
+  position: relative;
+  width: 120px;
+  height: 120px;
+
+  svg {
+    transform: rotate(-90deg);
+
+    circle {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+
+      &:first-child {
+        stroke: ${theme.colors.bgTertiary};
+      }
+
+      &:last-child {
+        stroke: ${({ $color }) => $color || theme.colors.accent};
+        stroke-dasharray: 314;
+        stroke-dashoffset: ${({ $progress }) => 314 - (314 * $progress) / 100};
+        transition: stroke-dashoffset 1s ease-out;
+      }
+    }
+  }
+`;
+
+// Theme Toggle Button
+export const ThemeToggle = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: ${theme.colors.bgTertiary};
+  border: 1px solid ${theme.colors.border};
+  border-radius: ${theme.radii.md};
+  color: ${theme.colors.text};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${theme.colors.border};
+    transform: scale(1.05);
+  }
+
+  svg {
+    transition: transform 0.3s;
+  }
+
+  &:active svg {
+    transform: rotate(180deg);
+  }
 `;
